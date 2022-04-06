@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
 // Interface for contract
@@ -19,7 +21,7 @@ contract Dex {
     // stores trader' balances
     mapping(address => mapping(bytes32 => uint)) public traderBalances;
 
-    constructor() public {
+    constructor() {
         admin = msg.sender;
     }
 
@@ -82,6 +84,4 @@ contract Dex {
             );
             traderBalances[msg.sender][_ticker] -= _amount;
         }
-    
-    
 }
