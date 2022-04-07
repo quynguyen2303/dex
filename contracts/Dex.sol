@@ -14,12 +14,28 @@ contract Dex {
         bytes32 ticker;
         address tokenAddress;
     }
+    // struct for store an order
+    struct Order {
+        // TODO
+        uint id;
+        uint amount;
+    }
+
+    // enum for Buy or Sell
+    enum Side {
+        BUY,
+        SELL
+    }
 
     mapping(bytes32 => Token) public tokens;
     bytes32[] public tokenList;
     address public admin;
     // stores trader' balances
     mapping(address => mapping(bytes32 => uint)) public traderBalances;
+    // mapping to stores order book, pool of orders
+    // TODO
+    // pointer for Order book
+    // TODO
 
     constructor() {
         admin = msg.sender;
@@ -83,5 +99,25 @@ contract Dex {
                 _amount
             );
             traderBalances[msg.sender][_ticker] -= _amount;
-        }
+    }
+
+    /**
+     * @dev Create a limit order
+     */
+    function createLimitOrder(
+        // TODO: add parameters
+        ) 
+        external {
+        // TODO: check the ticker is not DAI, we don't trade DAI
+
+        // TODO: Define a order is SELL or BUY
+
+        // TODO: Check the balance if SELL or BUY
+
+        // TODO: Add the order to orderbook
+
+        // TODO: Sort the orderbook as order of best price
+
+    }
+    
 }
