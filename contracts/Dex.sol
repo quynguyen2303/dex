@@ -39,7 +39,8 @@ contract Dex {
     // mapping to stores order book, pool of orders
     mapping(bytes32 => mapping(uint256 => Order[])) public orderbook; // uint is reference for Side.BUY or Side.SELL
     // pointer for Order book
-    uint256 nextOrderId;
+    uint256 public nextOrderId;
+    bytes32 constant DAI = bytes32("DAI");
 
     constructor() {
         admin = msg.sender;
@@ -115,12 +116,12 @@ contract Dex {
         Side _side
     ) external {
         // check the ticker is not DAI, we don't trade DAI
-        require(_ticker != tokens["DAI"].ticker, "Cannot trade DAI");
+        require(_ticker != DAI, "Cannot trade DAI");
         // Define a order is SELL or BUY
         if (_side == Side.BUY) {
             // Check the balance if SELL or BUY
             require(
-                (_amount * _price) < traderBalances[msg.sender]["DAI"],
+                (_amount * _price) < traderBalances[msg.sender][DAI],
                 "Not enoung DAI"
             );
         }
@@ -151,4 +152,8 @@ contract Dex {
         }
         nextOrderId++;
     }
+
+    /**
+     * @dev Create a market order
+     */
 }
