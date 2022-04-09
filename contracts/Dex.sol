@@ -23,8 +23,8 @@ contract Dex {
         uint256 filled;
         Side side;
         uint date;
+        address owner;
     }
-
     // enum for Buy or Sell
     enum Side {
         BUY,
@@ -40,22 +40,41 @@ contract Dex {
     mapping(bytes32 => mapping(uint256 => Order[])) public orderbook; // uint is reference for Side.BUY or Side.SELL
     // pointer for Order book
     uint256 public nextOrderId;
+    uint public nextTradeId;
+    // stores DAI ticker for consistent and save gas cause it only runs when compile
     bytes32 constant DAI = bytes32("DAI");
+
+    // event for a new trade
+    event NewTrade(
+        uint tradeId,
+        bytes32 ticker,
+        uint amount,
+        address seller,
+        address buyer,
+        uint price,
+        uint date
+    );
 
     constructor() {
         admin = msg.sender;
     }
 
+    //
     modifier onlyAdmin() {
         require(msg.sender == admin, "Only admin can add new token");
         _;
     }
     // modifier to check a token is existed in Dex
-    modifier tokenExist(bytes32 _ticker) {
+    modifier tokenExists(bytes32 _ticker) {
         require(
             tokens[_ticker].tokenAddress != address(0),
             "Token is not in the DEX yet."
         );
+        _;
+    }
+    // modifier to check the trade token is not DAI
+    modifier isNotDAI(bytes32 _ticker) {
+        require(_ticker != bytes32("DAI"), "Cannot trade DAI.");
         _;
     }
 
@@ -75,7 +94,7 @@ contract Dex {
      */
     function deposit(uint256 _amount, bytes32 _ticker)
         external
-        tokenExist(_ticker)
+        tokenExists(_ticker)
     {
         IERC20(tokens[_ticker].tokenAddress).transferFrom(
             msg.sender,
@@ -91,8 +110,9 @@ contract Dex {
     function withdraw(
         address _to,
         bytes32 _ticker,
-        uint256 _amount
-    ) external tokenExist(_ticker) {
+        uint256 _amount) 
+        external 
+        tokenExists(_ticker) {
         require(
             traderBalances[msg.sender][_ticker] >= _amount,
             "Balance is too low"
@@ -113,10 +133,10 @@ contract Dex {
         bytes32 _ticker,
         uint256 _amount,
         uint256 _price,
-        Side _side
-    ) external {
-        // check the ticker is not DAI, we don't trade DAI
-        require(_ticker != DAI, "Cannot trade DAI");
+        Side _side) 
+        external 
+        isNotDAI(_ticker)
+        tokenExists(_ticker){
         // Define a order is SELL or BUY
         if (_side == Side.BUY) {
             // Check the balance if SELL or BUY
@@ -134,7 +154,7 @@ contract Dex {
         }
         // Add the order to orderbook
         Order[] storage orders = orderbook[_ticker][uint256(_side)];
-        orders.push(Order(_ticker, nextOrderId, _amount, _price, 0, _side, block.timestamp));
+        orders.push(Order(_ticker, nextOrderId, _amount, _price, 0, _side, block.timestamp, msg.sender));
         // Sort the orderbook as order of best price
         uint i = orders.length - 1;
         while (i > 0) {
@@ -156,4 +176,50 @@ contract Dex {
     /**
      * @dev Create a market order
      */
+    function createMarketOrder(
+        bytes32 _ticker,
+        uint _amount,
+        Side _side
+        ) 
+        external 
+        isNotDAI(_ticker)
+        tokenExists(_ticker)
+        {
+        // TODO
+        if (_side == Side.SELL) {
+            require(
+                traderBalances[msg.sender][_ticker] >= _amount,
+                "Balance is not enough."
+            );
+        }
+        // Keep track of the _amount of this order to be filled
+        uint remaining = _amount;
+        // Get the first order in orderBook
+        uint i;
+        Order[] storage orders = orderbook[_ticker][uint(_side == Side.BUY ? Side.SELL : Side.BUY)];
+
+        while (i < orders.length - 1) {
+            uint available = orders[i].amount - orders[i].filled;
+            if (remaining <= available) {
+                orders[i].filled += remaining;
+                remaining -= available;
+                traderBalances[msg.sender][DAI] -= remaining * orders[i].price;
+                break;
+            } else {
+                remaining -= available;
+                orders[i].filled += available;
+                i++;
+                emit NewTrade(
+                    nextTradeId,
+                    _ticker,
+                    available,
+                    msg.sender,
+                    orders[i].owner,
+                    orders[i].price,
+                    block.timestamp
+                );
+            }
+       }
+    
+    }
 }
