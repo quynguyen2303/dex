@@ -58,8 +58,7 @@ contract Dex {
     constructor() {
         admin = msg.sender;
     }
-
-    //
+    // modifier to add new token to the exchange
     modifier onlyAdmin() {
         require(msg.sender == admin, "Only admin can add new token");
         _;
@@ -77,7 +76,6 @@ contract Dex {
         require(_ticker != bytes32("DAI"), "Cannot trade DAI.");
         _;
     }
-
     /**
      * @dev Add a token to Dex
      */
@@ -88,7 +86,6 @@ contract Dex {
         tokens[_ticker] = Token(_ticker, _tokenAddress);
         tokenList.push(_ticker);
     }
-
     /**
      * @dev Deposit a balance
      */
@@ -103,7 +100,6 @@ contract Dex {
         );
         traderBalances[msg.sender][_ticker] += _amount;
     }
-
     /**
      * @dev Withdraw a balance
      */
@@ -111,7 +107,9 @@ contract Dex {
         address _to,
         bytes32 _ticker,
         uint256 _amount
-    ) external tokenExists(_ticker) {
+        ) 
+        external 
+        tokenExists(_ticker) {
         require(
             traderBalances[msg.sender][_ticker] >= _amount,
             "Balance is too low"
@@ -123,7 +121,6 @@ contract Dex {
         );
         traderBalances[msg.sender][_ticker] -= _amount;
     }
-
     /**
      * @dev Create a limit order
      */
@@ -132,7 +129,10 @@ contract Dex {
         uint256 _amount,
         uint256 _price,
         Side _side
-    ) external isNotDAI(_ticker) tokenExists(_ticker) {
+        ) 
+        external 
+        isNotDAI(_ticker) 
+        tokenExists(_ticker) {
         // Define a order is SELL or BUY
         if (_side == Side.BUY) {
             // Check the balance if SELL or BUY
@@ -142,7 +142,7 @@ contract Dex {
             );
         }
         if (_side == Side.SELL) {
-            // TODO: Check the balance if SELL or BUY
+            // Check the balance if SELL or BUY
             require(
                 _amount <= traderBalances[msg.sender][_ticker],
                 "Not enough token"
@@ -163,7 +163,7 @@ contract Dex {
             )
         );
         // Sort the orderbook as order of best price
-        uint256 i = orders.length - 1;
+        uint256 i = orders.length > 0 ? (orders.length - 1) : 0;
         while (i > 0) {
             if (_side == Side.BUY && orders[i].price < orders[i - 1].price) {
                 break;
@@ -171,7 +171,6 @@ contract Dex {
             if (_side == Side.SELL && orders[i].price < orders[i - 1].price) {
                 break;
             }
-
             Order memory order = orders[i - 1];
             orders[i - 1] = orders[i];
             orders[i] = order;
@@ -179,7 +178,6 @@ contract Dex {
         }
         nextOrderId++;
     }
-
     /**
      * @dev Create a market order
      */
@@ -187,8 +185,10 @@ contract Dex {
         bytes32 _ticker,
         uint256 _amount,
         Side _side
-    ) external isNotDAI(_ticker) tokenExists(_ticker) {
-        // TODO
+        ) 
+        external 
+        isNotDAI(_ticker) 
+        tokenExists(_ticker) {
         if (_side == Side.SELL) {
             require(
                 traderBalances[msg.sender][_ticker] >= _amount,
