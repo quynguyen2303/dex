@@ -37,10 +37,15 @@ contract("Dex", (accounts) => {
             );
         };
         await Promise.all(
-            [dai, bat, rep, zrx].map(token => seedTokenBalance(token, trader1))
+            [dai, bat, rep, zrx].map(
+                token => seedTokenBalance(token, trader1))
         );
         await Promise.all(
-            [dai, bat, rep, zrx].map(token => seedTokenBalance(token, trader2))
+            [dai, bat, rep, zrx].map(
+                token => seedTokenBalance(token, trader2))
         );
+
+        // Test the deposit()
+        
     });
 });
