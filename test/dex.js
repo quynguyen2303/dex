@@ -7,7 +7,7 @@ const Zrx = artifacts.require("tokens/Zrx.sol");
 const Dex = artifacts.require("Dex.sol");
 
 contract("Dex", (accounts) => {
-    let dai, bat, rep, zrx;
+    let dai, bat, rep, zrx, dex;
     const [trader1, trader2] = [accounts[1], accounts[2]];
     const [DAI, BAT, REP, ZRX] = ["DAI", "BAT", "REP", "ZRX"].map(ticker => web3.utils.fromAscii(ticker));
 
@@ -19,7 +19,7 @@ contract("Dex", (accounts) => {
             Zrx.new()
         ]));
         // init Dex
-        const dex = await Dex.new();
+        dex = await Dex.new();
         await Promise.all([
             dex.addToken(DAI,dai.address),
             dex.addToken(BAT,bat.address),
@@ -27,9 +27,9 @@ contract("Dex", (accounts) => {
             dex.addToken(ZRX,zrx.address)
         ]);
         // init seed token balance for testing
-        const amount = web3.utils.toWei(1000);
+        const amount = web3.utils.toWei("10");
         const seedTokenBalance = async (token, trader) => {
-            await token.faucet(trader, amount);
+            await token.faucet(trader, amount)
             await token.approve(
                 dex.address,
                 amount,
@@ -44,8 +44,18 @@ contract("Dex", (accounts) => {
             [dai, bat, rep, zrx].map(
                 token => seedTokenBalance(token, trader2))
         );
-
-        // Test the deposit()
-        
     });
+
+            // Test the deposit() function
+    it("Should deposit the token", async () => {
+        const amount = web3.utils.toWei("0.01");
+                await dex.deposit(amount, DAI, {from: trader1});
+                const balance = await dex.traderBalances[trader1][DAI];
+    
+                assert(amount == balance.toString());
+            });
+    
+    it("Failed test", async () => {
+                assert(0 == 1);
+            })
 });
