@@ -1,4 +1,4 @@
-const { web3 } = require("@openzeppelin/test-helpers/src/setup");
+const { expectRevert } = require("@openzeppelin/test-helpers");
 
 const Dai = artifacts.require("tokens/Dai.sol");
 const Bat = artifacts.require("tokens/Bat.sol");
@@ -9,7 +9,8 @@ const Dex = artifacts.require("Dex.sol");
 contract("Dex", (accounts) => {
     let dai, bat, rep, zrx, dex;
     const [trader1, trader2] = [accounts[1], accounts[2]];
-    const [DAI, BAT, REP, ZRX] = ["DAI", "BAT", "REP", "ZRX"].map(ticker => web3.utils.fromAscii(ticker));
+    const [DAI, BAT, REP, ZRX] = ["DAI", "BAT", "REP", "ZRX"].map(
+        ticker => web3.utils.fromAscii(ticker));
 
     beforeEach( async () => {
         ([dai, bat, rep, zrx] = await Promise.all([
@@ -27,7 +28,7 @@ contract("Dex", (accounts) => {
             dex.addToken(ZRX,zrx.address)
         ]);
         // init seed token balance for testing
-        const amount = web3.utils.toWei("10");
+        const amount = web3.utils.toWei("1000");
         const seedTokenBalance = async (token, trader) => {
             await token.faucet(trader, amount)
             await token.approve(
@@ -48,14 +49,21 @@ contract("Dex", (accounts) => {
 
             // Test the deposit() function
     it("Should deposit the token", async () => {
-        const amount = web3.utils.toWei("0.01");
-                await dex.deposit(amount, DAI, {from: trader1});
-                const balance = await dex.traderBalances[trader1][DAI];
+        const amount = web3.utils.toWei("1");
+        await dex.deposit(amount, DAI, {from: trader1});
+        const balance = await dex.traderBalances(trader1, DAI);
     
-                assert(amount == balance.toString());
-            });
+        assert(amount == balance.toString());
+        });
     
-    it("Failed test", async () => {
-                assert(0 == 1);
-            })
+    it("Should NOT deposit the token not in the exchange yet.", async () => {
+        await expectRevert(
+            dex.deposit(
+                web3.utils.toWei("1"),
+                web3.utils.fromAscii("FAKE-TOKEN"),
+                {from: trader1}
+            ),
+            "Token is not in the DEX yet."
+        );
+    });
 });
