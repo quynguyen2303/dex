@@ -1,4 +1,5 @@
 const { expectRevert } = require("@openzeppelin/test-helpers");
+const { web3 } = require("@openzeppelin/test-helpers/src/setup");
 
 const Dai = artifacts.require("tokens/Dai.sol");
 const Bat = artifacts.require("tokens/Bat.sol");
@@ -47,14 +48,14 @@ contract("Dex", (accounts) => {
         );
     });
 
-            // Test the deposit() function
+    // Test the deposit() function
     it("Should deposit the token", async () => {
         const amount = web3.utils.toWei("1");
         await dex.deposit(amount, DAI, {from: trader1});
         const balance = await dex.traderBalances(trader1, DAI);
     
         assert(amount == balance.toString());
-        });
+    });
     
     it("Should NOT deposit the token not in the exchange yet.", async () => {
         await expectRevert(
@@ -64,6 +65,52 @@ contract("Dex", (accounts) => {
                 {from: trader1}
             ),
             "Token is not in the DEX yet."
+        );
+    });
+
+    // Test the withdraw() function
+    it.only("Should withdraw token", async () => {
+        const amount = web3.utils.toWei("10");
+        // const withdrawAmount = web3.utils.toWei("5");
+
+        await dex.deposit(amount, DAI, {from: trader1});
+
+        await dex.withdraw(DAI, amount, {from: trader1});
+
+        // const [balanceDex, balanceTrader] = await Promise.all([
+        //     dex.traderBalances(trader1, DAI),
+        //     dai.balanceOf(trader1)
+        // ]);
+
+        const balanceTrader = await dai.balanceOf(trader1);
+
+        // assert(balanceDex.isZero());
+        assert(balanceTrader.toString() === web3.utils.toWei("10"));
+    });
+
+    it("Should not withdraw an unexists token", async () => {
+        await expectRevert(
+            dex.withdraw(
+                trader1, 
+                web3.utils.fromAscii("FAKE-TOKEN"), 
+                web3.utils.toWei("1")
+            ),
+            "Token is not in the DEX yet."
+        );
+    });
+
+    it("Should not withdraw with low balance", async () => {
+        const amount = web3.utils.toWei("100");
+
+        await dex.deposit(amount, DAI, {from: trader1});
+
+        await expectRevert(
+            dex.withdraw(
+                trader1, 
+                DAI, 
+                web3.utils.toWei("1000")
+            ),
+            "Balance is too low"
         );
     });
 });

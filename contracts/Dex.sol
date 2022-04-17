@@ -104,7 +104,6 @@ contract Dex {
      * @dev Withdraw a balance
      */
     function withdraw(
-        address _to,
         bytes32 _ticker,
         uint256 _amount
         ) 
@@ -114,9 +113,9 @@ contract Dex {
             traderBalances[msg.sender][_ticker] >= _amount,
             "Balance is too low"
         );
-        IERC20(tokens[_ticker].tokenAddress).transferFrom(
-            address(this),
-            _to,
+
+        IERC20(tokens[_ticker].tokenAddress).transfer(
+            msg.sender,
             _amount
         );
         traderBalances[msg.sender][_ticker] -= _amount;
