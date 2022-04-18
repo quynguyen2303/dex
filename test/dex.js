@@ -22,12 +22,14 @@ contract("Dex", (accounts) => {
         ]));
         // init Dex
         dex = await Dex.new();
+
         await Promise.all([
             dex.addToken(DAI,dai.address),
             dex.addToken(BAT,bat.address),
             dex.addToken(REP,rep.address),
             dex.addToken(ZRX,zrx.address)
         ]);
+
         // init seed token balance for testing
         const amount = web3.utils.toWei("1000");
         const seedTokenBalance = async (token, trader) => {
@@ -68,12 +70,24 @@ contract("Dex", (accounts) => {
         );
     });
 
-    // Test the withdraw() function
-    it.only("Should withdraw token", async () => {
+    it.only("Test get balance", async () => {
+        const amount = web3.utils.toWei("10");
+
+        await dex.deposit(amount, DAI, {from: trader1});
+
+        console.log("deposited addess: " + dai.address);
+        let balance = await web3.eth.getBalance(dai.address);
+        console.log(balance);
+    });
+
+    // Test the withdraw() functioneth
+    it("Should withdraw token", async () => {
         const amount = web3.utils.toWei("10");
         // const withdrawAmount = web3.utils.toWei("5");
 
         await dex.deposit(amount, DAI, {from: trader1});
+
+        const balanceDex = await dex.tokens
 
         await dex.withdraw(DAI, amount, {from: trader1});
 
