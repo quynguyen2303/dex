@@ -70,37 +70,62 @@ contract("Dex", (accounts) => {
         );
     });
 
-    it.only("Test get balance", async () => {
+    it("Test get balance", async () => {
         const amount = web3.utils.toWei("10");
 
         await dex.deposit(amount, DAI, {from: trader1});
+        
+        let balance = await dai.balanceOf(dai.address);
 
         console.log("deposited addess: " + dai.address);
-        let balance = await web3.eth.getBalance(dai.address);
-        console.log(balance);
+        // let balance = await web3.eth.getBalance(dai.address);
+        console.log(balance.toString());
     });
 
     // Test the withdraw() functioneth
-    it("Should withdraw token", async () => {
+    it.only("Should withdraw token", async () => {
         const amount = web3.utils.toWei("10");
         // const withdrawAmount = web3.utils.toWei("5");
 
         await dex.deposit(amount, DAI, {from: trader1});
 
-        const balanceDex = await dex.tokens
+        // const balanceDex = await dex.tokens
 
         await dex.withdraw(DAI, amount, {from: trader1});
 
-        // const [balanceDex, balanceTrader] = await Promise.all([
-        //     dex.traderBalances(trader1, DAI),
-        //     dai.balanceOf(trader1)
-        // ]);
+        const [balanceDex, balanceTrader] = await Promise.all([
+            dex.traderBalances(trader1, DAI),
+            dai.balanceOf(trader1)
+        ]);
 
-        const balanceTrader = await dai.balanceOf(trader1);
+        // const balanceTrader = await dai.balanceOf(trader1);
 
-        // assert(balanceDex.isZero());
-        assert(balanceTrader.toString() === web3.utils.toWei("10"));
+        assert(balanceDex.isZero());
+        assert(balanceTrader.toString() === web3.utils.toWei("1000"));
     });
+
+    it('should withdraw tokens', async () => {
+        const amount = web3.utils.toWei('100');
+    
+        await dex.deposit(
+          amount,
+          DAI,
+          {from: trader1}
+        );
+    
+        await dex.withdraw(
+          DAI,
+          amount,
+          {from: trader1}
+        );
+    
+        const [balanceDex, balanceDai] = await Promise.all([
+          dex.traderBalances(trader1, DAI),
+          dai.balanceOf(trader1)
+        ]);
+        assert(balanceDex.isZero());
+        assert(balanceDai.toString() === web3.utils.toWei('1000')); 
+      });
 
     it("Should not withdraw an unexists token", async () => {
         await expectRevert(
