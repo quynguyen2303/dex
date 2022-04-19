@@ -83,7 +83,7 @@ contract("Dex", (accounts) => {
     });
 
     // Test the withdraw() functioneth
-    it.only("Should withdraw token", async () => {
+    it("Should withdraw token", async () => {
         const amount = web3.utils.toWei("10");
         // const withdrawAmount = web3.utils.toWei("5");
 
@@ -130,24 +130,27 @@ contract("Dex", (accounts) => {
     it("Should not withdraw an unexists token", async () => {
         await expectRevert(
             dex.withdraw(
-                trader1, 
                 web3.utils.fromAscii("FAKE-TOKEN"), 
-                web3.utils.toWei("1")
+                web3.utils.toWei("1"),
+                {from: trader1}
             ),
             "Token is not in the DEX yet."
         );
     });
 
     it("Should not withdraw with low balance", async () => {
-        const amount = web3.utils.toWei("100");
+        const amount = web3.utils.toWei("100", "wei");
 
         await dex.deposit(amount, DAI, {from: trader1});
-
+        // console.log(await dai.balanceOf("0x2C2B9C9a4a25e24B174f26114e8926a9f2128FE4").toString())
+        // var transfer = dai.transfer();
+        // transfer.get();
+        
         await expectRevert(
             dex.withdraw(
-                trader1, 
                 DAI, 
-                web3.utils.toWei("1000")
+                web3.utils.toWei("1000"),
+                {from: trader1}
             ),
             "Balance is too low"
         );
