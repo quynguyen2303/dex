@@ -7,6 +7,11 @@ const Rep = artifacts.require("tokens/Rep.sol");
 const Zrx = artifacts.require("tokens/Zrx.sol");
 const Dex = artifacts.require("Dex.sol");
 
+const SIDE = {
+    BUY:0,
+    SELL:1
+}
+
 contract("Dex", (accounts) => {
     let dai, bat, rep, zrx, dex;
     const [trader1, trader2] = [accounts[1], accounts[2]];
@@ -70,7 +75,7 @@ contract("Dex", (accounts) => {
         );
     });
 
-    it.only("Test get balance", async () => {
+    it("Test get balance", async () => {
         const amount = web3.utils.toWei("10");
 
         await dex.deposit( DAI, amount, {from: trader1});
@@ -160,8 +165,23 @@ contract("Dex", (accounts) => {
 
     // Test for createLimitOrder
     // Happy paths
-    it("Should create a limit order", async () => {
+    it.only("Should create a limit order", async () => {
+        await dex.deposit(
+            DAI,
+            web3.utils.toWei("1000"),
+            {from: trader1}
+        );
 
+        await dex.createLimitOrder(
+            REP,
+            web3.utils.toWei("10"),
+            10,
+            SIDE.BUY,
+            {from: trader1}
+        );
+        
+        const buyOrders = await dex.getOrders(REP, SIDE.BUY);
+        assert(buyOrders.length == 1);
     });
     // Unhappy paths
     it("Should NOT create a limit order for not existed token", async () => {
