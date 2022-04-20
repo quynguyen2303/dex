@@ -89,7 +89,7 @@ contract Dex {
     /**
      * @dev Deposit a balance
      */
-    function deposit(uint256 _amount, bytes32 _ticker)
+    function deposit(bytes32 _ticker, uint256 _amount )
         external
         tokenExists(_ticker)
     {

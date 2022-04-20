@@ -53,7 +53,7 @@ contract("Dex", (accounts) => {
     // Test the deposit() function
     it("Should deposit the token", async () => {
         const amount = web3.utils.toWei("1");
-        await dex.deposit(amount, DAI, {from: trader1});
+        await dex.deposit(DAI,amount, {from: trader1});
         const balance = await dex.traderBalances(trader1, DAI);
     
         assert(amount == balance.toString());
@@ -62,24 +62,26 @@ contract("Dex", (accounts) => {
     it("Should NOT deposit the token not in the exchange yet.", async () => {
         await expectRevert(
             dex.deposit(
+                                web3.utils.fromAscii("FAKE-TOKEN"),
                 web3.utils.toWei("1"),
-                web3.utils.fromAscii("FAKE-TOKEN"),
                 {from: trader1}
             ),
             "Token is not in the DEX yet."
         );
     });
 
-    it("Test get balance", async () => {
+    it.only("Test get balance", async () => {
         const amount = web3.utils.toWei("10");
 
-        await dex.deposit(amount, DAI, {from: trader1});
+        await dex.deposit( DAI, amount, {from: trader1});
         
         let balance = await dai.balanceOf(dai.address);
+        let dexBlance = await dai.balanceOf(dex.address);
 
         console.log("deposited addess: " + dai.address);
         // let balance = await web3.eth.getBalance(dai.address);
         console.log(balance.toString());
+        console.log(dexBlance.toString());
     });
 
     // Test the withdraw() functioneth
@@ -87,7 +89,7 @@ contract("Dex", (accounts) => {
         const amount = web3.utils.toWei("10");
         // const withdrawAmount = web3.utils.toWei("5");
 
-        await dex.deposit(amount, DAI, {from: trader1});
+        await dex.deposit( DAI,amount, {from: trader1});
 
         // const balanceDex = await dex.tokens
 
@@ -108,8 +110,8 @@ contract("Dex", (accounts) => {
         const amount = web3.utils.toWei('100');
     
         await dex.deposit(
+            DAI,
           amount,
-          DAI,
           {from: trader1}
         );
     
@@ -141,7 +143,7 @@ contract("Dex", (accounts) => {
     it("Should not withdraw with low balance", async () => {
         const amount = web3.utils.toWei("100", "wei");
 
-        await dex.deposit(amount, DAI, {from: trader1});
+        await dex.deposit( DAI,amount, {from: trader1});
         // console.log(await dai.balanceOf("0x2C2B9C9a4a25e24B174f26114e8926a9f2128FE4").toString())
         // var transfer = dai.transfer();
         // transfer.get();
@@ -154,5 +156,27 @@ contract("Dex", (accounts) => {
             ),
             "Balance is too low"
         );
+    });
+
+    // Test for createLimitOrder
+    // Happy paths
+    it("Should create a limit order", async () => {
+
+    });
+    // Unhappy paths
+    it("Should NOT create a limit order for not existed token", async () => {
+
+    });
+
+    it("Should NOT create a limit order for DAI token", async () => {
+
+    });
+
+    it("Should NOT create a sell limit order when token amount is not enough", async () => {
+
+    });
+
+    it("Should NOT create a buy limit order if DAI amount is not enough", async () => {
+
     });
 });
