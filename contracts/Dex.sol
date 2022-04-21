@@ -76,6 +76,13 @@ contract Dex {
         require(_ticker != bytes32("DAI"), "Cannot trade DAI.");
         _;
     }
+
+    function getOrders(bytes32 _ticker, Side _side) 
+        external 
+        view 
+        returns (Order[] memory) {
+        return orderbook[_ticker][uint(_side)];
+    }
     /**
      * @dev Add a token to Dex
      */

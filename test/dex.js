@@ -180,7 +180,10 @@ contract("Dex", (accounts) => {
             {from: trader1}
         );
         
-        const buyOrders = await dex.getOrders(REP, SIDE.BUY);
+
+        const buyOrders = await dex.getOrders(REP, 0);
+        
+
         assert(buyOrders.length == 1);
     });
     // Unhappy paths
