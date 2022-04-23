@@ -180,11 +180,18 @@ contract("Dex", (accounts) => {
             {from: trader1}
         );
         
-
         const buyOrders = await dex.getOrders(REP, 0);
-        
+        const sellOrders = await dex.getOrders(REP, 1);
 
+        // console.log(typeof(buyOrders[0].amount));
+        // console.log(buyOrders[0].ticker);
+        
         assert(buyOrders.length == 1);
+        assert(sellOrders.length == 0);
+        assert(buyOrders[0].price == 10);
+        assert(buyOrders[0].amount == web3.utils.toWei("10"));
+        assert(buyOrders[0].ticker == web3.utils.padRight(REP, 64));
+
     });
     // Unhappy paths
     it("Should NOT create a limit order for not existed token", async () => {
