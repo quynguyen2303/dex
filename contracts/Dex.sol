@@ -73,7 +73,9 @@ contract Dex {
     }
     // modifier to check the trade token is not DAI
     modifier isNotDAI(bytes32 _ticker) {
-        require(_ticker != bytes32("DAI"), "Cannot trade DAI.");
+        require(
+            _ticker != bytes32("DAI"), 
+            "Cannot trade DAI.");
         _;
     }
 
@@ -144,7 +146,7 @@ contract Dex {
             // Check the balance if SELL or BUY
             require(
                 (_amount * _price) < traderBalances[msg.sender][DAI],
-                "Not enoung DAI"
+                "Not enough DAI"
             );
         }
         if (_side == Side.SELL) {

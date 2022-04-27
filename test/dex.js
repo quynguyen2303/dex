@@ -165,7 +165,7 @@ contract("Dex", (accounts) => {
 
     // Test for createLimitOrder
     // Happy paths
-    it.only("Should create a limit order", async () => {
+    it("Should create a limit order", async () => {
         await dex.deposit(
             DAI,
             web3.utils.toWei("1000"),
@@ -195,18 +195,60 @@ contract("Dex", (accounts) => {
     });
     // Unhappy paths
     it("Should NOT create a limit order for not existed token", async () => {
-
+        await expectRevert( 
+            dex.createLimitOrder(
+                web3.utils.fromAscii("FAKE-TOKEN"),
+                web3.utils.toWei("10"),
+                10,
+                SIDE.SELL,
+                {from: trader2}
+            ),
+            "Token is not in the DEX yet."
+        );
     });
 
     it("Should NOT create a limit order for DAI token", async () => {
-
+        await expectRevert(
+            dex.createLimitOrder(
+                DAI,
+                web3.utils.toWei("10"),
+                10,
+                SIDE.BUY,
+                {from: trader2}
+            ),
+            "Cannot trade DAI."
+        );
     });
 
     it("Should NOT create a sell limit order when token amount is not enough", async () => {
+        await dex.deposit(
+            REP,
+            web3.utils.toWei("10"),
+            {from: trader1}
+        );
 
+        await expectRevert(
+            dex.createLimitOrder(
+                REP,
+                web3.utils.toWei("100"),
+                10,
+                SIDE.SELL,
+                {from: trader1}
+            ),
+            "Not enough token"
+        );
     });
 
-    it("Should NOT create a buy limit order if DAI amount is not enough", async () => {
-
+    it.only("Should NOT create a buy limit order if DAI amount is not enough", async () => {
+        await expectRevert(
+            dex.createLimitOrder(
+                REP,
+                web3.utils.toWei("10"),
+                10,
+                SIDE.BUY,
+                {from: trader1}
+            ),
+            "Not enough DAI"
+        );
     });
 });
