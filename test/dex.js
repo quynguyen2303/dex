@@ -37,12 +37,12 @@ contract("Dex", (accounts) => {
 
         // init seed token balance for testing
         const amount = web3.utils.toWei("1000");
-        const seedTokenBalance = async (token, trader) => {
-            await token.faucet(trader, amount)
+        const seedTokenBalance = async (token, owner) => {
+            await token.faucet(owner, amount)
             await token.approve(
                 dex.address,
                 amount,
-                {from: trader}
+                {from: owner}
             );
         };
         await Promise.all(
@@ -165,7 +165,7 @@ contract("Dex", (accounts) => {
 
     // Test for createLimitOrder
     // Happy paths
-    it("Should create a limit order", async () => {
+    it.only("Should create a limit order", async () => {
         await dex.deposit(
             DAI,
             web3.utils.toWei("1000"),
@@ -180,17 +180,56 @@ contract("Dex", (accounts) => {
             {from: trader1}
         );
         
-        const buyOrders = await dex.getOrders(REP, 0);
-        const sellOrders = await dex.getOrders(REP, 1);
-
-        // console.log(typeof(buyOrders[0].amount));
-        // console.log(buyOrders[0].ticker);
+        let buyOrders = await dex.getOrders(REP, 0);
+        let sellOrders = await dex.getOrders(REP, 1);
         
         assert(buyOrders.length == 1);
         assert(sellOrders.length == 0);
-        assert(buyOrders[0].price == 10);
+        assert(buyOrders[0].price == "10");
         assert(buyOrders[0].amount == web3.utils.toWei("10"));
         assert(buyOrders[0].ticker == web3.utils.padRight(REP, 64));
+
+        await dex.deposit(
+            DAI,
+            web3.utils.toWei("1000"),
+            {from: trader2}
+        );
+
+        await dex.createLimitOrder(
+            REP,
+            web3.utils.toWei("10"),
+            11,
+            SIDE.BUY,
+            {from: trader2}
+        );
+        
+        buyOrders = await dex.getOrders(REP, 0);
+        sellOrders = await dex.getOrders(REP, 1);
+        
+        assert(buyOrders.length == 2);
+        assert(sellOrders.length == 0);
+        assert(buyOrders[0].price == "11");
+        assert(buyOrders[0].owner == trader2);
+        assert(buyOrders[1].owner == trader1);
+
+        await dex.createLimitOrder(
+            REP,
+            web3.utils.toWei("10"),
+            9,
+            SIDE.BUY,
+            {from: trader2}
+        );
+        
+        buyOrders = await dex.getOrders(REP, 0);
+        sellOrders = await dex.getOrders(REP, 1);
+        
+        assert(buyOrders.length == 3);
+        assert(sellOrders.length == 0);
+        assert(buyOrders[0].price == 11);
+        assert(buyOrders[0].owner == trader2);
+        assert(buyOrders[1].owner == trader1);
+        assert(buyOrders[2].owner == trader2);
+        assert(buyOrders[2].price == "9");
 
     });
     // Unhappy paths
@@ -239,7 +278,7 @@ contract("Dex", (accounts) => {
         );
     });
 
-    it.only("Should NOT create a buy limit order if DAI amount is not enough", async () => {
+    it("Should NOT create a buy limit order if DAI amount is not enough", async () => {
         await expectRevert(
             dex.createLimitOrder(
                 REP,
