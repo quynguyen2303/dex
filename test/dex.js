@@ -290,4 +290,26 @@ contract("Dex", (accounts) => {
             "Not enough DAI"
         );
     });
+
+    // Test for createMarketOrder
+    // Happy path
+    it("Should create a market order", async () => {
+
+    });
+    // Unhappy paths
+    it("Should NOT create a market order if token is not exists", async () => {
+
+    });
+
+    it("Should NOT create a market order if token is DAI", async () => {
+
+    });
+
+    it("Should NOT create a SELL market order if the balance is not enough", async () => {
+
+    });
+
+    it("Should NOT create a BUY market order if the DAI balance is not enough", async () => {
+
+    });
 });
