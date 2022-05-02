@@ -211,7 +211,7 @@ contract Dex {
             uint256(_side == Side.BUY ? Side.SELL : Side.BUY)
         ];
 
-        while (i < orders.length - 1 && remaining > 0) {
+        while (i <= orders.length - 1 && remaining > 0) {
             uint256 available = orders[i].amount - orders[i].filled;
             uint256 matched = remaining > available ? available : remaining;
 

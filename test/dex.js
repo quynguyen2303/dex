@@ -165,7 +165,7 @@ contract("Dex", (accounts) => {
 
     // Test for createLimitOrder
     // Happy paths
-    it.only("Should create a limit order", async () => {
+    it("Should create a limit order", async () => {
         await dex.deposit(
             DAI,
             web3.utils.toWei("1000"),
@@ -293,7 +293,52 @@ contract("Dex", (accounts) => {
 
     // Test for createMarketOrder
     // Happy path
-    it("Should create a market order", async () => {
+    it.only("Should create a market order", async () => {
+        await dex.deposit(
+            DAI,
+            web3.utils.toWei("1000"),
+            {from: trader2}
+        );
+
+        await dex.deposit(
+            BAT,
+            web3.utils.toWei("100"),
+            {from: trader1}
+        );
+
+        await dex.createLimitOrder(
+            BAT,
+            web3.utils.toWei("100"),
+            10,
+            SIDE.SELL,
+            {from: trader1},
+        );
+        
+        await dex.createMarketOrder(
+            BAT,
+            web3.utils.toWei("10"),
+            SIDE.BUY,
+            {from: trader2}
+        );
+
+        let buyOrders = await dex.getOrders(BAT, 0);
+        let sellOrders = await dex.getOrders(BAT, 1);
+        let [balanceDai, balanceBat1, balanceBat2] = await Promise.all([
+            dex.traderBalances(trader1, DAI),
+            dex.traderBalances(trader1, BAT),
+            dex.traderBalances(trader2, BAT)
+            // bat.balanceOf(trader2)
+        ]);
+
+        console.log(sellOrders[0]);
+        
+        // console.log(buyOrders.length);
+        assert(buyOrders.length == 0);
+        assert(sellOrders.length == 1);
+        console.log(balanceBat1.toString());
+        assert(balanceBat2.toString() == web3.utils.toWei("10"));
+        assert(balanceBat1.toString() == web3.utils.toWei("90"));
+        assert(balanceDai.toString() == web3.utils.toWei("100"))
 
     });
     // Unhappy paths
