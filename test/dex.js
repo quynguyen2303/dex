@@ -293,7 +293,7 @@ contract("Dex", (accounts) => {
 
     // Test for createMarketOrder
     // Happy path
-    it.only("Should create a market order", async () => {
+    it("Should create a market order", async () => {
         await dex.deposit(
             DAI,
             web3.utils.toWei("1000"),
@@ -335,7 +335,7 @@ contract("Dex", (accounts) => {
         // console.log(buyOrders.length);
         assert(buyOrders.length == 0);
         assert(sellOrders.length == 1);
-        console.log(balanceBat1.toString());
+        // console.log(balanceBat1.toString());
         assert(balanceBat2.toString() == web3.utils.toWei("10"));
         assert(balanceBat1.toString() == web3.utils.toWei("90"));
         assert(balanceDai.toString() == web3.utils.toWei("100"))
@@ -343,18 +343,75 @@ contract("Dex", (accounts) => {
     });
     // Unhappy paths
     it("Should NOT create a market order if token is not exists", async () => {
-
+        await expectRevert( 
+            dex.createMarketOrder(
+                web3.utils.fromAscii("FAKE-TOKEN"),
+                web3.utils.toWei("10"),
+                SIDE.SELL,
+                {from: trader2}
+            ),
+            "Token is not in the DEX yet."
+        );
     });
 
     it("Should NOT create a market order if token is DAI", async () => {
-
+        await expectRevert(
+            dex.createMarketOrder(
+                DAI,
+                web3.utils.toWei("10"),
+                SIDE.BUY,
+                {from: trader2}
+            ),
+            "Cannot trade DAI."
+        );
     });
 
     it("Should NOT create a SELL market order if the balance is not enough", async () => {
+        await dex.deposit(
+            REP,
+            web3.utils.toWei("10"),
+            {from: trader1}
+        );
 
+        await expectRevert(
+            dex.createMarketOrder(
+                REP,
+                web3.utils.toWei("100"),
+                SIDE.SELL,
+                {from: trader1}
+            ),
+            "Balance is not enough."
+        );
     });
 
-    it("Should NOT create a BUY market order if the DAI balance is not enough", async () => {
+    it.only("Should NOT create a BUY market order if the DAI balance is not enough", async () => {
+        await dex.deposit(
+            DAI,
+            web3.utils.toWei("10"),
+            {from: trader2}
+        );
+        await dex.deposit(
+            REP,
+            web3.utils.toWei("100"),
+            {from: trader1}
+        );
 
+        await dex.createLimitOrder(
+            REP,
+            web3.utils.toWei("100"),
+            100,
+            SIDE.SELL,
+            {from: trader1},
+        );
+
+        await expectRevert(
+            dex.createMarketOrder(
+                REP,
+                web3.utils.toWei("10"),
+                SIDE.BUY,
+                {from: trader2}
+            ),
+            "Not enough DAI"
+        );
     });
 });
