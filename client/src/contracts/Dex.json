@@ -30350,14 +30350,64 @@
   },
   "networks": {
     "5777": {
-      "events": {},
+      "events": {
+        "0xaeb09aeb2e315596a8e4c601fc001d16f633be06a8711a1fb60a965d32c6158a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "tradeId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "ticker",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "seller",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "buyer",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "date",
+              "type": "uint256"
+            }
+          ],
+          "name": "NewTrade",
+          "type": "event"
+        }
+      },
       "links": {},
-      "address": "0x22cFf90a8Dca0685186A874237d51f5c09067145",
-      "transactionHash": "0xbe20a1801bfa93574587a0f42bb82f40054fb1c874b1b7b1255b52de188898e0"
+      "address": "0x456dA362370B1C1a4F65b5d6aFA36fD63D029B3b",
+      "transactionHash": "0xdfa0a19008ea0fb098f00897449c9cb4cc8a8b4d2a647169b6277ca521787abf"
     }
   },
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-05-07T03:18:31.440Z",
+  "updatedAt": "2022-05-08T14:53:03.965Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "Decentralized Exchange",

@@ -58,7 +58,7 @@ contract("Dex", (accounts) => {
     // Test the deposit() function
     it("Should deposit the token", async () => {
         const amount = web3.utils.toWei("1");
-        await dex.deposit(DAI,amount, {from: trader1});
+        await dex.deposit(DAI, amount, {from: trader1});
         const balance = await dex.traderBalances(trader1, DAI);
     
         assert(amount == balance.toString());
