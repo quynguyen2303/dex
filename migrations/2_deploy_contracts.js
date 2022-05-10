@@ -98,6 +98,8 @@ module.exports = async function(deployer, _network, accounts) {
     await dex.createLimitOrder(BAT, 2000, 12, SIDE.BUY, {from: trader1});
     await dex.createMarketOrder(BAT, 2000, SIDE.SELL, {from: trader2});
 
+
+
     await dex.createLimitOrder(REP, 1000, 2, SIDE.BUY, {from: trader1});
     await dex.createMarketOrder(REP, 1000, SIDE.SELL, {from: trader2});
     await increaseTime(1);
@@ -110,11 +112,21 @@ module.exports = async function(deployer, _network, accounts) {
     await dex.createLimitOrder(REP, 1200, 6, SIDE.BUY, {from: trader1});
     await dex.createMarketOrder(REP, 1200, SIDE.SELL, {from: trader2});
 
+    
+    // console.log(dex.address);
+    let balance = await bat.balanceOf(dex.address);
+    console.log(balance.toString());
+
+    balance = await rep.balanceOf(dex.address)
+    console.log(balance.toString())
+
     //create orders
     await Promise.all([
       dex.createLimitOrder(BAT, 1400, 10, SIDE.BUY, {from: trader1}),
       dex.createLimitOrder(BAT, 1200, 11, SIDE.BUY, {from: trader2}),
       dex.createLimitOrder(BAT, 1000, 12, SIDE.BUY, {from: trader3 , gas:3000000}),
+
+      
 
       dex.createLimitOrder(REP, 3000, 4, SIDE.BUY, {from: trader1}),
       dex.createLimitOrder(REP, 2000, 5, SIDE.BUY, {from: trader1}),
@@ -135,5 +147,6 @@ module.exports = async function(deployer, _network, accounts) {
       dex.createLimitOrder(ZRX, 1500, 23, SIDE.SELL, {from: trader3}),
       dex.createLimitOrder(ZRX, 1200, 22, SIDE.SELL, {from: trader3}),
       dex.createLimitOrder(ZRX, 900, 21, SIDE.SELL, {from: trader4}),
+
     ]);
 };
