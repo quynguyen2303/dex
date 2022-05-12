@@ -100,8 +100,8 @@ module.exports = async function(deployer, _network, accounts) {
 
 
 
-    await dex.createLimitOrder(REP, 1000, 2, SIDE.BUY, {from: trader1});
-    await dex.createMarketOrder(REP, 1000, SIDE.SELL, {from: trader2});
+    await dex.createLimitOrder(REP, 1000, 2, SIDE.BUY, {from: trader1,gas:3000000});
+    await dex.createMarketOrder(REP, 1000, SIDE.SELL, {from: trader2,gas:3000000});
     await increaseTime(1);
     await dex.createLimitOrder(REP, 500, 4, SIDE.BUY, {from: trader1});
     await dex.createMarketOrder(REP, 500, SIDE.SELL, {from: trader2});
@@ -125,8 +125,6 @@ module.exports = async function(deployer, _network, accounts) {
       dex.createLimitOrder(BAT, 1400, 10, SIDE.BUY, {from: trader1}),
       dex.createLimitOrder(BAT, 1200, 11, SIDE.BUY, {from: trader2}),
       dex.createLimitOrder(BAT, 1000, 12, SIDE.BUY, {from: trader3 , gas:3000000}),
-
-      
 
       dex.createLimitOrder(REP, 3000, 4, SIDE.BUY, {from: trader1}),
       dex.createLimitOrder(REP, 2000, 5, SIDE.BUY, {from: trader1}),
