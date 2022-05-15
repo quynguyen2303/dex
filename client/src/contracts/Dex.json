@@ -66,7 +66,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -79,7 +80,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -92,7 +94,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -156,7 +159,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -175,7 +179,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -199,7 +204,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -223,7 +229,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -289,7 +296,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -30395,11 +30403,12 @@
       },
       "links": {},
       "address": "0x456dA362370B1C1a4F65b5d6aFA36fD63D029B3b",
-      "transactionHash": "0xdfa0a19008ea0fb098f00897449c9cb4cc8a8b4d2a647169b6277ca521787abf"
+      "transactionHash": "0x0cc7023ac5527d2baaf5f12f9368da4d76a297a00d3f32f4b4216ea878282b48"
     }
   },
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-05-13T02:26:25.966Z",
+  "updatedAt": "2022-05-15T13:58:29.949Z",
+  "networkType": "ethereum",
   "devdoc": {
     "details": "Decentralized Exchange",
     "kind": "dev",

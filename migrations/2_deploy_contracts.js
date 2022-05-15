@@ -82,19 +82,19 @@ module.exports = async function(deployer, _network, accounts) {
         }, () => {});
     }
 
-    bat.balanceOf(dex.address).then(
-        result => console.log("Bat balance of Dex: " + result.toString()));
-    bat.balanceOf(dex.address).then(
-        result => console.log("Bat balance of Dex: " + result.toString()));
-    web3.eth.getBalance(dex.address).then(
-        result => console.log("ETH balance Dex: "+ result));
+    // bat.balanceOf(dex.address).then(
+    //     result => console.log("Bat balance of Dex: " + result.toString()));
+    // bat.balanceOf(dex.address).then(
+    //     result => console.log("Bat balance of Dex: " + result.toString()));
+    // web3.eth.getBalance(dex.address).then(
+    //     result => console.log("ETH balance Dex: "+ result));
 
-    bat.balanceOf(trader2).then(
-        result => console.log("Bat balance of trader 2: " + result.toString()));
-    bat.balanceOf(trader3).then(
-        result => console.log("Bat balance of trader 3: " + result.toString()));
-    web3.eth.getBalance(trader2).then(
-        result => console.log("ETH balance trader 2: "+ result));
+    // bat.balanceOf(trader2).then(
+    //     result => console.log("Bat balance of trader 2: " + result.toString()));
+    // bat.balanceOf(trader3).then(
+    //     result => console.log("Bat balance of trader 3: " + result.toString()));
+    // web3.eth.getBalance(trader2).then(
+    //     result => console.log("ETH balance trader 2: "+ result));
     
     //create trades
     await dex.createLimitOrder(BAT, 1000, 10, SIDE.BUY, {from: trader1});
@@ -128,19 +128,19 @@ module.exports = async function(deployer, _network, accounts) {
 
     
     // console.log(dex.address);
-    bat.balanceOf(trader2).then(
-        result => console.log("Bat balance of trader 2: " + result.toString()));
-    bat.balanceOf(trader3).then(
-        result => console.log("Bat balance of trader 3: " + result.toString()));
-    web3.eth.getBalance(trader2).then(
-        result => console.log("ETH balance trader 2: "+ result));
+    // bat.balanceOf(trader2).then(
+    //     result => console.log("Bat balance of trader 2: " + result.toString()));
+    // bat.balanceOf(trader3).then(
+    //     result => console.log("Bat balance of trader 3: " + result.toString()));
+    // web3.eth.getBalance(trader2).then(
+    //     result => console.log("ETH balance trader 2: "+ result));
 
-    bat.balanceOf(dex.address).then(
-        result => console.log("Bat balance of Dex: " + result.toString()));
-    bat.balanceOf(dex.address).then(
-        result => console.log("Bat balance of Dex: " + result.toString()));
-    web3.eth.getBalance(dex.address).then(
-        result => console.log("ETH balance Dex: "+ result));
+    // bat.balanceOf(dex.address).then(
+    //     result => console.log("Bat balance of Dex: " + result.toString()));
+    // bat.balanceOf(dex.address).then(
+    //     result => console.log("Bat balance of Dex: " + result.toString()));
+    // web3.eth.getBalance(dex.address).then(
+    //     result => console.log("ETH balance Dex: "+ result));
 
     //create orders
     await Promise.all([
@@ -150,23 +150,23 @@ module.exports = async function(deployer, _network, accounts) {
 
       dex.createLimitOrder(REP, 3000, 4, SIDE.BUY, {from: trader1}),
       dex.createLimitOrder(REP, 2000, 5, SIDE.BUY, {from: trader1}),
-      dex.createLimitOrder(REP, 500, 6, SIDE.BUY, {from: trader4}),
+    //   dex.createLimitOrder(REP, 500, 6, SIDE.BUY, {from: trader4})
 
-      dex.createLimitOrder(ZRX, 4000, 12, SIDE.BUY, {from: trader1}),
-      dex.createLimitOrder(ZRX, 3000, 13, SIDE.BUY, {from: trader1}),
-      dex.createLimitOrder(ZRX, 500, 14, SIDE.BUY, {from: trader4}),
+    //   dex.createLimitOrder(ZRX, 4000, 12, SIDE.BUY, {from: trader1}),
+    //   dex.createLimitOrder(ZRX, 3000, 13, SIDE.BUY, {from: trader1}),
+    //   dex.createLimitOrder(ZRX, 500, 14, SIDE.BUY, {from: trader4}),
 
-      dex.createLimitOrder(BAT, 2000, 16, SIDE.SELL, {from: trader1}),
-      dex.createLimitOrder(BAT, 3000, 15, SIDE.SELL, {from: trader4}),
-      dex.createLimitOrder(BAT, 500, 14, SIDE.SELL, {from: trader4}),
+    //   dex.createLimitOrder(BAT, 2000, 16, SIDE.SELL, {from: trader1}),
+    //   dex.createLimitOrder(BAT, 3000, 15, SIDE.SELL, {from: trader4}),
+    //   dex.createLimitOrder(BAT, 500, 14, SIDE.SELL, {from: trader4}),
 
-      dex.createLimitOrder(REP, 4000, 10, SIDE.SELL, {from: trader1}),
-      dex.createLimitOrder(REP, 2000, 9, SIDE.SELL, {from: trader1}),
-      dex.createLimitOrder(REP, 800, 8, SIDE.SELL, {from: trader4}),
+    //   dex.createLimitOrder(REP, 4000, 10, SIDE.SELL, {from: trader1}),
+    //   dex.createLimitOrder(REP, 2000, 9, SIDE.SELL, {from: trader1}),
+    //   dex.createLimitOrder(REP, 800, 8, SIDE.SELL, {from: trader4}),
 
-      dex.createLimitOrder(ZRX, 1500, 23, SIDE.SELL, {from: trader1}),
-      dex.createLimitOrder(ZRX, 1200, 22, SIDE.SELL, {from: trader1}),
-      dex.createLimitOrder(ZRX, 900, 21, SIDE.SELL, {from: trader4}),
+    //   dex.createLimitOrder(ZRX, 1500, 23, SIDE.SELL, {from: trader1}),
+    //   dex.createLimitOrder(ZRX, 1200, 22, SIDE.SELL, {from: trader1}),
+    //   dex.createLimitOrder(ZRX, 900, 21, SIDE.SELL, {from: trader4}),
 
     ]);
 };
