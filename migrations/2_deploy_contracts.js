@@ -146,7 +146,7 @@ module.exports = async function(deployer, _network, accounts) {
     await Promise.all([
       dex.createLimitOrder(BAT, 1400, 10, SIDE.BUY, {from: trader1}),
       dex.createLimitOrder(BAT, 1200, 11, SIDE.BUY, {from: trader2}),
-    //   dex.createLimitOrder(BAT, 1000, 12, SIDE.BUY, {from: trader3}),
+      dex.createLimitOrder(BAT, 1000, 12, SIDE.BUY, {from: trader3}),
 
       dex.createLimitOrder(REP, 3000, 4, SIDE.BUY, {from: trader1}),
       dex.createLimitOrder(REP, 2000, 5, SIDE.BUY, {from: trader1}),
